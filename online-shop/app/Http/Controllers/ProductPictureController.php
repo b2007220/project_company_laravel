@@ -29,7 +29,7 @@ class ProductPictureController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'product_id' => ['required', 'numeric', 'integer'],
+            'product_id' => ['required', 'exists:product,id'],
             'link' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
         $product = Product_Picture::create($data);

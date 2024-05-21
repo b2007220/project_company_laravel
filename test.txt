@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>The select multiple attribute</h1>
+
+<p>The multiple attribute specifies that multiple options can be selected at once:</p>
+
+<form action="test.html" id="myForm">
+    <input type="text" name="text">
+    <label for="cars">Choose a car:</label>
+    <select name="cars" id="cars" multiple>
+        <option value="volvo">Volvo</option>
+        <option value="saab">Saab</option>
+        <option value="opel">Opel</option>
+        <option value="audi">Audi</option>
+    </select>
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+
+<p>Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.</p>
+
+<script>
+    document.getElementById("myForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent form submission
+
+        var selectedOptions = document.getElementById("cars").selectedOptions;
+        var selectedValues = Array.from(selectedOptions).map(option => option.value);
+
+        console.log(selectedValues);
+    });
+</script>
+
+</body>
+</html>
+<?php
+public function store(Request $request)
+{
+    // Lấy các giá trị đã được chọn từ form
+    $selectedCars = $request->input('cars');
+    
+    // Lưu các giá trị vào bảng hãng xe
+    $brand = new Brand();
+    $brand->name = 'Tên Hãng'; // Thay 'Tên Hãng' bằng dữ liệu thực từ form
+    $brand->save();
+
+    // Lưu các giá trị vào bảng xe
+    foreach ($selectedCars as $car) {
+        $vehicle = new Vehicle();
+        $vehicle->brand_id = $brand->id;
+        $vehicle->name = $car;
+        $vehicle->save();
+    }
+
+    // Redirect hoặc thực hiện các thao tác tiếp theo...
+}
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
+public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'cars' => 'required|array',
+        'cars.*' => 'string|in:volvo,saab,opel,audi', // Kiểm tra từng giá trị trong mảng cars
+    ]);
+
+    if ($validator->fails()) {
+        return redirect('form')
+                    ->withErrors($validator)
+                    ->withInput();
+    }
+
+    // Nếu dữ liệu hợp lệ, tiếp tục xử lý
+}
