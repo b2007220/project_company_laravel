@@ -210,7 +210,7 @@
                             onclick="event.preventDefault();
                             this.closest('form').submit();">
                             {{ __('Log Out') }}
-                        </button>
+                            <i class="icon-logout"></i></button>
                     </form>
                 </div>
 
